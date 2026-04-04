@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tejas Tripathi — QA Automation Engineer</title>
 
-  <!-- ============================================================
-       FONTS
-       Cormorant Garamond = editorial serif for big headings
-       Outfit = clean modern sans for body text
-  ============================================================ -->
+  <!-- FONTS: Cormorant Garamond (headings) + Outfit (body) -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
   <style>
 
     /* ============================================================
-       CSS VARIABLES — Edit colors/fonts here to retheme everything
+       CSS VARIABLES — change here to retheme everything at once
     ============================================================ */
     :root {
       --bg:        #FAFAFA;
@@ -40,54 +36,80 @@
       background: var(--bg);
       color: var(--primary);
       overflow-x: hidden;
-      /* Hide default cursor everywhere — custom cursor handles it */
-      cursor: none;
+      /* Keep normal arrow cursor — we only add a trail on top */
+      cursor: auto;
     }
     img { display: block; max-width: 100%; }
-    a   { color: inherit; text-decoration: none; cursor: none; }
-    button { cursor: none; }
-
+    a   { color: inherit; text-decoration: none; }
 
     /* ============================================================
-       CUSTOM CURSOR  >< symbol
-       Two <span> elements inside #cursor form the >< shape
-       They spread apart on hover over interactive elements
+       CURSOR TRAIL — small dot that follows mouse with a lag
+       Shown only on desktop (hidden on touch via JS check)
+       Changes color when over dark backgrounds
     ============================================================ */
-    #cursor {
+    #cursor-trail {
       position: fixed;
-      top: 0; left: 0;
-      z-index: 9999;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
       pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 3px;
+      z-index: 9999;
       transform: translate(-50%, -50%);
-      transition: transform 0.08s linear;
-      will-change: transform;
+      /* Smooth lag behind the real cursor */
+      transition: left 0.12s cubic-bezier(0.23,1,0.32,1),
+                  top  0.12s cubic-bezier(0.23,1,0.32,1),
+                  background 0.25s ease,
+                  transform  0.2s cubic-bezier(0.34,1.56,0.64,1);
+      opacity: 0.7;
     }
-    #cursor .cur-l,
-    #cursor .cur-r {
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--primary);
-      line-height: 1;
-      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1),
-                  opacity   0.18s ease,
-                  color     0.18s ease;
-      display: block;
+    /* Expand dot on hover over links / buttons */
+    body.cursor-hover #cursor-trail {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0.35;
     }
-    /* Expand the brackets when over a link/button */
-    body.cursor-hover #cursor .cur-l { transform: translateX(-5px); color: var(--secondary); }
-    body.cursor-hover #cursor .cur-r { transform: translateX(5px);  color: var(--secondary); }
-
-    /* Shrink in the particle zone — looks like it's being absorbed */
-    body.cursor-particle #cursor .cur-l { transform: translateX(-2px) scale(0.75); color: #888; }
-    body.cursor-particle #cursor .cur-r { transform: translateX(2px)  scale(0.75); color: #888; }
+    /* On dark sections (#contact, footer) — switch to white so it stays visible */
+    body.cursor-dark #cursor-trail {
+      background: #ffffff;
+      opacity: 0.6;
+    }
+    /* In particle zone — shrink slightly */
+    body.cursor-particle #cursor-trail {
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0.5;
+    }
+    /* Hide on mobile / touch (set by JS) */
+    body.is-touch #cursor-trail { display: none; }
 
 
     /* ============================================================
-       NAVIGATION — Fixed top bar
+       MOBILE TOUCH RIPPLE — shows on tap, replaces cursor trail
+       A ripple circle expands from the tap point and fades
+    ============================================================ */
+    .touch-ripple {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0.5;
+      animation: rippleOut 0.5s ease-out forwards;
+    }
+    /* White ripple on dark sections */
+    .touch-ripple.light {
+      border-color: #ffffff;
+    }
+    @keyframes rippleOut {
+      0%   { transform: translate(-50%, -50%) scale(0);   opacity: 0.5; }
+      100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+    }
+
+
+    /* ============================================================
+       NAVIGATION
     ============================================================ */
     nav {
       position: fixed;
@@ -103,7 +125,7 @@
       border-bottom: 1px solid var(--border);
     }
 
-    /* Hamburger — LEFT */
+    /* Hamburger — left */
     .hamburger {
       display: flex; flex-direction: column; justify-content: center;
       gap: 5px; width: 36px; height: 36px;
@@ -119,14 +141,14 @@
     .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
     .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-    /* Logo — CENTER */
+    /* Logo — center */
     .nav-logo {
       font-family: var(--serif); font-size: 1.1rem; font-weight: 400;
       letter-spacing: 0.02em;
       position: absolute; left: 50%; transform: translateX(-50%);
     }
 
-    /* CTA — RIGHT */
+    /* Contact CTA — right */
     .nav-cta {
       font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em;
       text-transform: uppercase; padding: 0.5rem 1.2rem;
@@ -137,7 +159,7 @@
 
 
     /* ============================================================
-       SLIDE-IN MENU
+       SLIDE-IN MENU (hamburger opens this)
     ============================================================ */
     .menu-backdrop {
       position: fixed; inset: 0; background: rgba(0,0,0,0.3);
@@ -177,7 +199,7 @@
 
 
     /* ============================================================
-       HERO — 3-column: sidebar | content | photo
+       HERO — 3 columns: thin sidebar | content | photo
     ============================================================ */
     #hero {
       min-height: 100vh;
@@ -187,8 +209,8 @@
       align-items: stretch;
     }
 
-    /* LEFT SIDEBAR — vertical role line
-       ⚡ CHANGE TEXT inside .hero-sidebar-text to update your role */
+    /* Left sidebar: vertical role text
+       ⚡ CHANGE the text in .hero-sidebar-text to update your role */
     .hero-sidebar {
       display: flex; align-items: center; justify-content: center;
       border-right: 1px solid var(--border); padding: 2rem 0;
@@ -199,7 +221,7 @@
       text-transform: uppercase; color: var(--muted); white-space: nowrap;
     }
 
-    /* MAIN content column */
+    /* Main content column */
     .hero-main {
       display: flex; flex-direction: column; justify-content: center;
       padding: 4rem 5%; gap: 1.8rem;
@@ -220,27 +242,17 @@
       50%      { box-shadow: 0 0 0 7px rgba(74,222,128,0.04); }
     }
 
-    /* ---- PARTICLE ZONE ----
-       This wrapper div holds only the heading + bio paragraph.
-       The canvas for particles sits inside it, behind the text.
-       Everything OUTSIDE this zone (status badge, buttons, socials) is untouched. */
-    #particle-zone {
-      position: relative;
-      padding: 0.5rem 0;
-      /* Small negative margin so canvas edges don't clip weirdly */
-    }
-    /* Canvas sits behind all text — pointer-events: none so text stays clickable */
+    /* PARTICLE ZONE — wraps heading + bio, canvas sits behind them */
+    #particle-zone { position: relative; padding: 0.5rem 0; }
     #particle-canvas {
       position: absolute;
       top: -30px; left: -40px;
       width: calc(100% + 80px); height: calc(100% + 60px);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
-    /* Content inside particle zone sits above the canvas */
     #particle-zone .zone-content { position: relative; z-index: 1; }
 
-    /* BIG heading */
+    /* Big heading */
     .hero-heading {
       font-family: var(--serif);
       font-size: clamp(3.2rem, 6.5vw, 6rem);
@@ -248,14 +260,13 @@
     }
     .hero-heading em { font-style: italic; color: var(--secondary); }
 
-    /* Typewriter wrapper */
+    /* Typewriter name */
     .typewriter-wrap { min-height: 1.1em; }
     #typewriter {
       font-family: var(--serif);
       font-size: clamp(3.2rem, 6.5vw, 6rem);
       font-weight: 300; line-height: 0.95; letter-spacing: -0.03em;
     }
-    /* Blinking cursor after name */
     .tw-cursor {
       display: inline-block; width: 3px; height: 0.82em;
       background: var(--primary); vertical-align: middle; margin-left: 3px;
@@ -263,11 +274,10 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-    /* Bio text inside particle zone */
+    /* Bio text */
     .hero-sub {
       font-size: 1rem; font-weight: 300; color: var(--secondary);
-      line-height: 1.75; max-width: 440px;
-      margin-top: 1rem;
+      line-height: 1.75; max-width: 440px; margin-top: 1rem;
     }
 
     /* CTA buttons */
@@ -299,8 +309,7 @@
 
 
     /* ============================================================
-       HERO PHOTO COLUMN — right side
-       Has a real image + a file upload drop zone
+       HERO PHOTO — right column (desktop + tablet)
     ============================================================ */
     .hero-photo {
       position: relative; overflow: hidden;
@@ -309,73 +318,50 @@
       display: flex; flex-direction: column;
     }
 
-    /* Image display — shows when a photo is uploaded */
-    .photo-display {
-      flex: 1; position: relative;
-    }
+    /* Photo display (after upload) */
+    .photo-display { flex: 1; position: relative; }
     .photo-display img {
       width: 100%; height: 100%; object-fit: cover; object-position: top center;
-      filter: grayscale(20%); transition: filter 0.5s;
-      display: block;
+      filter: grayscale(20%); transition: filter 0.5s; display: block;
     }
     .photo-display:hover img { filter: grayscale(0%); }
 
-    /* Overlay shown on hover to let user re-upload */
+    /* Hover overlay to re-upload */
     .photo-reupload {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,0); display: flex;
-      align-items: center; justify-content: center;
+      position: absolute; inset: 0; background: rgba(0,0,0,0);
+      display: flex; align-items: center; justify-content: center;
       opacity: 0; transition: opacity 0.3s, background 0.3s;
     }
-    .photo-display:hover .photo-reupload {
-      opacity: 1; background: rgba(0,0,0,0.35);
-    }
+    .photo-display:hover .photo-reupload { opacity: 1; background: rgba(0,0,0,0.35); }
     .photo-reupload span {
       font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em;
       text-transform: uppercase; color: #fff;
-      padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.5);
-      border-radius: 100px;
+      padding: 0.5rem 1rem; border: 1px solid rgba(255,255,255,0.5); border-radius: 100px;
     }
 
-    /* UPLOAD DROP ZONE — shown when no photo yet
-       ⚡ Drag & drop or click to choose your photo */
+    /* Upload drop zone (shown when no photo yet) */
     .photo-upload-zone {
       flex: 1; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 1rem;
-      padding: 2rem;
-      border: 2px dashed var(--border);
-      border-radius: 0;
-      transition: border-color 0.2s, background 0.2s;
-      text-align: center;
+      padding: 2rem; border: 2px dashed var(--border);
+      transition: border-color 0.2s, background 0.2s; text-align: center;
     }
-    .photo-upload-zone.drag-over {
-      border-color: var(--primary); background: rgba(17,17,17,0.03);
-    }
+    .photo-upload-zone.drag-over { border-color: var(--primary); background: rgba(17,17,17,0.03); }
     .upload-icon {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: var(--border);
+      width: 48px; height: 48px; border-radius: 50%; background: var(--border);
       display: flex; align-items: center; justify-content: center;
     }
-    .upload-icon svg { color: var(--secondary); }
-    .photo-upload-zone h3 {
-      font-size: 0.95rem; font-weight: 500; color: var(--primary);
-    }
-    .photo-upload-zone p {
-      font-size: 0.78rem; color: var(--muted); line-height: 1.5; max-width: 200px;
-    }
+    .photo-upload-zone h3 { font-size: 0.95rem; font-weight: 500; }
+    .photo-upload-zone p  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; max-width: 200px; }
     .upload-btn {
-      font-size: 0.78rem; font-weight: 500;
-      padding: 0.5rem 1.2rem; border-radius: 100px;
-      border: 1.5px solid var(--primary); color: var(--primary);
-      background: transparent; transition: background 0.2s, color 0.2s;
-      display: inline-block;
+      font-size: 0.78rem; font-weight: 500; padding: 0.5rem 1.2rem;
+      border-radius: 100px; border: 1.5px solid var(--primary); color: var(--primary);
+      background: transparent; transition: background 0.2s, color 0.2s; display: inline-block;
     }
     .upload-btn:hover { background: var(--primary); color: var(--white); }
-
-    /* Hidden file input (triggered by clicking the zone) */
     #photo-input { display: none; }
 
-    /* Scroll hint label */
+    /* Scroll hint */
     .scroll-hint {
       position: absolute; bottom: 2rem; right: 1.5rem;
       font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
@@ -383,6 +369,50 @@
       display: flex; align-items: center; gap: 0.5rem;
     }
     .scroll-hint::after { content: ''; display: block; width: 1px; height: 40px; background: var(--muted); }
+
+
+    /* ============================================================
+       MOBILE PHOTO CARD — shown only on small screens
+       Full-width photo strip below the hero text on mobile
+    ============================================================ */
+    .mobile-photo-section {
+      display: none; /* hidden on desktop, shown in media query below */
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    /* Photo display inside mobile section */
+    .mobile-photo-inner {
+      position: relative;
+      height: 70vw; /* proportional height */
+      max-height: 420px;
+      overflow: hidden;
+    }
+    .mobile-photo-inner img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      filter: grayscale(15%);
+      display: block;
+    }
+
+    /* Upload prompt for mobile */
+    .mobile-upload-zone {
+      height: 240px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.8rem;
+      padding: 2rem; text-align: center;
+      border: 2px dashed var(--border);
+    }
+    .mobile-upload-zone h3 { font-size: 0.9rem; font-weight: 500; }
+    .mobile-upload-zone p  { font-size: 0.75rem; color: var(--muted); }
+
+    /* Re-upload tap on mobile photo */
+    .mobile-photo-inner .mobile-retap {
+      position: absolute; bottom: 1rem; right: 1rem;
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; color: #fff;
+      padding: 0.4rem 0.9rem; border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 100px; background: rgba(0,0,0,0.3);
+    }
 
 
     /* ============================================================
@@ -394,8 +424,7 @@
       padding: 0.9rem 0; background: var(--surface);
     }
     .marquee-track {
-      display: flex; gap: 2.5rem;
-      width: max-content;
+      display: flex; gap: 2.5rem; width: max-content;
       animation: ticker 28s linear infinite;
     }
     .marquee-track:hover { animation-play-state: paused; }
@@ -430,16 +459,13 @@
     ============================================================ */
     #about { background: var(--surface); }
     .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
-
     .about-body p { font-size: 1rem; font-weight: 300; color: var(--secondary); line-height: 1.8; margin-bottom: 1.2rem; }
-
     .tech-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
     .chip {
       font-size: 0.75rem; font-weight: 500; padding: 0.3rem 0.85rem;
       border-radius: 100px; border: 1px solid var(--border);
       color: var(--secondary); background: var(--white);
     }
-
     .about-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .about-card {
       background: var(--white); border-radius: 18px; padding: 1.5rem;
@@ -452,11 +478,100 @@
 
 
     /* ============================================================
+       EXPERIENCE SECTION
+       ⚡ ADD new .exp-item blocks when you join a company / internship
+    ============================================================ */
+    #experience { background: var(--white); }
+
+    /* Timeline layout */
+    .exp-timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    /* Vertical line on the left */
+    .exp-timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: var(--border);
+    }
+
+    /* Single experience row */
+    .exp-item {
+      position: relative;
+      padding: 0 0 3rem 2rem;
+    }
+    .exp-item:last-child { padding-bottom: 0; }
+
+    /* Dot on the timeline line */
+    .exp-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 6px;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      background: var(--white);
+      transform: translateX(calc(-50% + 0.5px));
+    }
+
+    /* Current/active role — filled dot */
+    .exp-item.active::before {
+      background: var(--primary);
+    }
+
+    .exp-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.4rem;
+    }
+    .exp-role {
+      font-family: var(--serif);
+      font-size: 1.3rem; font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+    .exp-date {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      white-space: nowrap; padding-top: 0.3rem;
+    }
+    .exp-company {
+      font-size: 0.88rem; font-weight: 500; color: var(--secondary);
+      margin-bottom: 0.8rem;
+    }
+    .exp-desc {
+      font-size: 0.9rem; font-weight: 300; color: var(--secondary);
+      line-height: 1.7; max-width: 560px;
+    }
+    .exp-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 0.9rem; }
+    .exp-tag {
+      font-size: 0.65rem; font-weight: 500; letter-spacing: 0.05em;
+      padding: 0.2rem 0.65rem; border-radius: 100px;
+      border: 1px solid var(--border); color: var(--muted); background: var(--surface);
+    }
+
+    /* Empty state — shown when no experience yet */
+    .exp-empty {
+      padding: 2.5rem;
+      border: 1.5px dashed var(--border);
+      border-radius: 20px; text-align: center;
+    }
+    .exp-empty .empty-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .exp-empty h3 { font-size: 1rem; font-weight: 500; margin-bottom: 0.4rem; }
+    .exp-empty p  { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+
+    /* ============================================================
        SKILLS
     ============================================================ */
-    #skills { background: var(--white); }
+    #skills { background: var(--surface); }
     .skills-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
-    .skill-group { background: var(--surface); border-radius: 20px; padding: 1.8rem; border: 1px solid var(--border); }
+    .skill-group { background: var(--white); border-radius: 20px; padding: 1.8rem; border: 1px solid var(--border); }
     .skill-group h3 { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.4rem; }
     .skill-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0; border-bottom: 1px solid var(--border); }
     .skill-row:last-child { border-bottom: none; }
@@ -470,20 +585,20 @@
     /* ============================================================
        PROJECTS
     ============================================================ */
-    #projects { background: var(--surface); }
+    #projects { background: var(--white); }
     .projects-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
     .project-card {
-      background: var(--white); border-radius: 20px;
+      background: var(--surface); border-radius: 20px;
       border: 1px solid var(--border); overflow: hidden;
       display: flex; flex-direction: column;
       transition: transform 0.3s, box-shadow 0.3s;
     }
     .project-card:hover { transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.07); }
-    .project-thumb { height: 190px; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 3rem; border-bottom: 1px solid var(--border); overflow: hidden; }
+    .project-thumb { height: 190px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 3rem; border-bottom: 1px solid var(--border); overflow: hidden; }
     .project-thumb img { width:100%; height:100%; object-fit:cover; }
     .project-body { padding: 1.6rem; flex: 1; display: flex; flex-direction: column; }
     .project-tags { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
-    .project-tag { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.05em; padding: 0.18rem 0.6rem; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); background: var(--surface); }
+    .project-tag { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.05em; padding: 0.18rem 0.6rem; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); background: var(--white); }
     .project-card h3 { font-size: 1.05rem; font-weight: 500; margin-bottom: 0.5rem; }
     .project-card p  { font-size: 0.85rem; color: var(--secondary); line-height: 1.65; flex: 1; }
     .project-links   { display: flex; gap: 0.7rem; margin-top: 1.3rem; }
@@ -497,7 +612,7 @@
     /* ============================================================
        BLOG
     ============================================================ */
-    #blog { background: var(--white); }
+    #blog { background: var(--surface); }
     .blog-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
     .blog-left p { font-size: 0.95rem; font-weight: 300; color: var(--secondary); line-height: 1.8; margin-bottom: 2rem; }
     .medium-cta {
@@ -509,43 +624,49 @@
     .medium-cta:hover { transform: translateY(-2px); opacity: 0.85; }
     .medium-icon { font-style: normal; font-weight: 700; font-size: 1.1rem; }
     .blog-cards { display: flex; flex-direction: column; gap: 1rem; }
-    .blog-placeholder { background: var(--surface); border-radius: 14px; padding: 1.2rem 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+    .blog-placeholder { background: var(--white); border-radius: 14px; padding: 1.2rem 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
     .blog-num { font-family: var(--serif); font-size: 1.8rem; color: #ddd; font-weight: 300; min-width: 2rem; }
     .blog-placeholder p { font-size: 0.85rem; color: var(--muted); font-style: italic; }
 
 
     /* ============================================================
-       CONTACT
+       CONTACT — dark background
+       All text & cursor must be visible on black bg
     ============================================================ */
-    #contact { background: var(--primary); color: var(--white); text-align: center; }
+    #contact {
+      background: var(--primary); color: var(--white); text-align: center;
+    }
+    /* Label on dark bg */
     #contact .label { color: #555; justify-content: center; }
     #contact .label::before { background: #444; }
     #contact .section-title { color: var(--white); }
     #contact .section-title em { color: #555; }
+
     .contact-sub { font-size: 1rem; font-weight: 300; color: #888; max-width: 460px; margin: 0 auto 2.5rem; line-height: 1.75; }
     .contact-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
     .btn-cw { font-size: 0.85rem; font-weight: 500; padding: 0.8rem 2rem; border-radius: 100px; background: var(--white); color: var(--primary); transition: transform 0.2s; }
     .btn-cw:hover { transform: translateY(-2px); }
-    .btn-co { font-size: 0.85rem; font-weight: 500; padding: 0.8rem 2rem; border-radius: 100px; border: 1.5px solid #333; color: var(--white); transition: border-color 0.2s; }
-    .btn-co:hover { border-color: #666; }
+    .btn-co { font-size: 0.85rem; font-weight: 500; padding: 0.8rem 2rem; border-radius: 100px; border: 1.5px solid #444; color: var(--white); transition: border-color 0.2s; }
+    .btn-co:hover { border-color: #888; }
     .contact-divider { width: 1px; height: 80px; background: #2a2a2a; margin: 0 auto 2rem; }
     .contact-info { display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; }
     .c-item label { display: block; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 0.3rem; }
-    .c-item a { font-size: 0.88rem; color: #ccc; transition: color 0.2s; }
-    .c-item a:hover { color: var(--white); }
+    /* Links on dark bg — ensure visibility */
+    .c-item a { font-size: 0.88rem; color: #cccccc; transition: color 0.2s; }
+    .c-item a:hover { color: #ffffff; }
 
 
     /* ============================================================
-       FOOTER
+       FOOTER — also dark, ensure text visible
     ============================================================ */
     footer {
       background: var(--primary); border-top: 1px solid #1e1e1e;
       padding: 1.4rem 5%;
       display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
     }
-    footer p { font-size: 0.72rem; color: #444; }
-    footer a { font-size: 0.72rem; color: #444; transition: color 0.2s; }
-    footer a:hover { color: #888; }
+    footer p { font-size: 0.72rem; color: #555; }
+    footer a { font-size: 0.72rem; color: #555; transition: color 0.2s; }
+    footer a:hover { color: #aaa; }
 
 
     /* ============================================================
@@ -556,7 +677,7 @@
 
     /* Hero entrance animations */
     .anim { opacity: 0; animation: up 0.7s ease forwards; }
-    .d1{animation-delay:0.1s} .d2{animation-delay:0.25s} .d3{animation-delay:0.4s} .d4{animation-delay:0.55s} .d5{animation-delay:0.7s}
+    .d1{animation-delay:0.1s} .d2{animation-delay:0.25s} .d3{animation-delay:0.4s} .d4{animation-delay:0.55s}
     @keyframes up { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
 
 
@@ -564,12 +685,17 @@
        RESPONSIVE
     ============================================================ */
     @media (max-width: 900px) {
+      /* Hide right photo column — use mobile section below instead */
       #hero { grid-template-columns: 40px 1fr; }
       .hero-photo { display: none; }
+      /* Show the mobile photo strip */
+      .mobile-photo-section { display: block; }
+
       .about-grid { grid-template-columns: 1fr; gap: 3rem; }
       .skills-grid { grid-template-columns: 1fr 1fr; }
       .blog-inner  { grid-template-columns: 1fr; gap: 3rem; }
     }
+
     @media (max-width: 600px) {
       #hero { grid-template-columns: 1fr; }
       .hero-sidebar { display: none; }
@@ -579,6 +705,7 @@
       .about-cards   { grid-template-columns: 1fr; }
       .contact-info  { gap: 2rem; }
       section { padding: 4.5rem 1.2rem; }
+      .exp-header { flex-direction: column; gap: 0.3rem; }
     }
 
   </style>
@@ -586,40 +713,36 @@
 <body>
 
   <!-- ============================================================
-       CUSTOM CURSOR — the >< symbol that follows your mouse
-       Two spans: cur-l = ">" and cur-r = "<"
+       CURSOR TRAIL — smooth dot following mouse (desktop only)
+       Auto-hides on touch devices via JS
   ============================================================ -->
-  <div id="cursor">
-    <span class="cur-l">&gt;</span>
-    <span class="cur-r">&lt;</span>
-  </div>
+  <div id="cursor-trail"></div>
 
 
-  <!-- ============================================================
-       MENU BACKDROP
-  ============================================================ -->
+  <!-- MENU BACKDROP -->
   <div class="menu-backdrop" id="backdrop" onclick="closeMenu()"></div>
 
 
   <!-- ============================================================
        SLIDE-IN MENU
-       ⚡ ADD/REMOVE links as you build new sections
+       ⚡ ADD experience link once you have experience to show
   ============================================================ -->
   <div class="mobile-menu" id="mobileMenu">
     <ul class="menu-links">
-      <li><a href="#about"    onclick="closeMenu()">About</a></li>
-      <li><a href="#skills"   onclick="closeMenu()">Skills</a></li>
-      <li><a href="#projects" onclick="closeMenu()">Projects</a></li>
-      <li><a href="#blog"     onclick="closeMenu()">Blog</a></li>
-      <li><a href="#contact"  onclick="closeMenu()">Contact</a></li>
+      <li><a href="#about"      onclick="closeMenu()">About</a></li>
+      <li><a href="#experience" onclick="closeMenu()">Experience</a></li>
+      <li><a href="#skills"     onclick="closeMenu()">Skills</a></li>
+      <li><a href="#projects"   onclick="closeMenu()">Projects</a></li>
+      <li><a href="#blog"       onclick="closeMenu()">Blog</a></li>
+      <li><a href="#contact"    onclick="closeMenu()">Contact</a></li>
     </ul>
     <!-- Social icons inside menu
-         ⚡ REPLACE href="" with your actual profile URLs -->
+         ⚡ REPLACE href="" with your actual URLs -->
     <div class="menu-socials">
       <a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank" title="LinkedIn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
       </a>
-      <a href="https://github.com" target="_blank" title="GitHub">
+      <a href="https://github.com/TxTMaverick" target="_blank" title="GitHub">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
       </a>
       <a href="https://x.com" target="_blank" title="X">
@@ -642,7 +765,7 @@
        NAVIGATION
   ============================================================ -->
   <nav>
-    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open navigation menu">
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
       <span></span><span></span><span></span>
     </button>
     <a href="#hero" class="nav-logo">Tejas Tripathi</a>
@@ -651,73 +774,59 @@
 
 
   <!-- ============================================================
-       HERO SECTION
+       HERO
   ============================================================ -->
   <section id="hero">
 
-    <!-- LEFT SIDEBAR: vertical role
-         ⚡ CHANGE the text here to update your displayed role -->
+    <!-- Vertical role label — left sidebar
+         ⚡ CHANGE THIS TEXT to update your displayed role -->
     <div class="hero-sidebar">
       <span class="hero-sidebar-text">QA Automation Engineer</span>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- Main content -->
     <div class="hero-main">
 
-      <!-- Status badge — outside particle zone, no animation here -->
+      <!-- Status badge (outside particle zone) -->
       <div class="status-badge anim d1">
         <span class="status-dot"></span>
         Available for work
       </div>
 
-      <!-- ============================================================
-           PARTICLE ZONE — particles spawn only here when you hover
-           Contains: big heading (typed name) + bio paragraph
-           Everything else (buttons, socials) is outside this div
-      ============================================================ -->
+      <!-- PARTICLE ZONE: heading + bio only -->
       <div id="particle-zone" class="anim d2">
-        <!-- Canvas behind everything — JS draws particles here -->
         <canvas id="particle-canvas"></canvas>
-
-        <!-- Actual content sits above canvas (z-index: 1) -->
         <div class="zone-content">
-
-          <!-- Big heading with typewriter name -->
           <h1 class="hero-heading">
             Namaste, I'm<br>
             <span class="typewriter-wrap">
               <span id="typewriter"></span><span class="tw-cursor"></span>
             </span>
           </h1>
-
-          <!-- Bio paragraph
-               ⚡ EDIT this text to describe yourself -->
+          <!-- ⚡ EDIT this bio text to describe yourself -->
           <p class="hero-sub">
             I build reliable test suites with Selenium &amp; Java, automate workflows with Python, and write about tech on Medium. Always learning, always shipping.
           </p>
-
         </div>
       </div>
-      <!-- End particle zone -->
 
-      <!-- CTA BUTTONS — outside particle zone
-           ⚡ Replace # in View CV with your Google Drive / Notion CV link -->
+      <!-- CTA buttons (outside particle zone)
+           ⚡ Replace # in View CV with your Google Drive / Notion CV URL -->
       <div class="hero-actions anim d3">
         <a href="#projects" class="btn-dark">View Projects</a>
         <a href="#" target="_blank" class="btn-outline">View CV ↗</a>
       </div>
 
-      <!-- SOCIAL ICONS — outside particle zone
-           ⚡ Replace href="" values with your real profile URLs -->
+      <!-- Social icons (outside particle zone)
+           ⚡ Replace href="" values with your real URLs -->
       <div class="hero-socials anim d4">
-
         <a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank" class="social-icon" title="LinkedIn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
         </a>
-        <a href="https://github.com" target="_blank" class="social-icon" title="GitHub">
+        <a href="https://github.com/TxTMaverick" target="_blank" class="social-icon" title="GitHub">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
         </a>
-        <a href="https://x.com" target="_blank" class="social-icon" title="X (Twitter)">
+        <a href="https://x.com" target="_blank" class="social-icon" title="X">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
         </a>
         <a href="https://youtube.com" target="_blank" class="social-icon" title="YouTube">
@@ -729,63 +838,71 @@
         <a href="mailto:tejastripathi26@gmail.com" class="social-icon" title="Email">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
         </a>
-
       </div>
+
     </div><!-- /hero-main -->
 
-
-    <!-- ============================================================
-         RIGHT PHOTO COLUMN
-         Shows: upload zone (no photo) OR photo + re-upload hover
-         ⚡ DRAG & DROP your photo onto this area, or click "Choose Photo"
-    ============================================================ -->
-    <div class="hero-photo" id="heroPhoto">
-
-      <!-- Hidden file input -->
-      <input type="file" id="photo-input" accept="image/*" />
-
-      <!-- UPLOAD ZONE — visible when no photo is set
-           Click anywhere in this zone or the button to upload -->
-      <div class="photo-upload-zone" id="uploadZone"
+    <!-- DESKTOP PHOTO COLUMN — right side
+         ⚡ Drag & drop your photo here or click Choose Photo -->
+    <div class="hero-photo" id="heroPhotoDesktop">
+      <input type="file" id="photo-input" accept="image/*"/>
+      <!-- Upload zone (before photo) -->
+      <div class="photo-upload-zone" id="uploadZoneDesktop"
            onclick="document.getElementById('photo-input').click()"
-           ondragover="handleDragOver(event)"
-           ondragleave="handleDragLeave(event)"
-           ondrop="handleDrop(event)">
-
+           ondragover="handleDragOver(event,'desktop')"
+           ondragleave="handleDragLeave(event,'desktop')"
+           ondrop="handleDrop(event,'desktop')">
         <div class="upload-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
             <circle cx="12" cy="7" r="4"/>
           </svg>
         </div>
-
         <h3>Add Your Photo</h3>
-        <p>Drag &amp; drop your photo here, or click to browse</p>
+        <p>Drag &amp; drop or click to browse</p>
         <span class="upload-btn">Choose Photo</span>
-
-      </div><!-- /upload zone -->
-
-      <!-- PHOTO DISPLAY — hidden until a photo is uploaded -->
-      <div class="photo-display" id="photoDisplay" style="display:none; height:100%;">
-        <img id="photoImg" src="" alt="Tejas Tripathi" />
-        <!-- Hover overlay to re-upload -->
+      </div>
+      <!-- Photo display (after upload) -->
+      <div class="photo-display" id="photoDisplayDesktop" style="display:none; height:100%;">
+        <img id="photoImgDesktop" src="" alt="Tejas Tripathi"/>
         <div class="photo-reupload" onclick="document.getElementById('photo-input').click()">
           <span>Change Photo</span>
         </div>
       </div>
-
-      <!-- Scroll hint label -->
       <span class="scroll-hint">Scroll down</span>
-
-    </div><!-- /hero-photo -->
+    </div>
 
   </section><!-- /hero -->
 
 
   <!-- ============================================================
-       TICKER
-       ⚡ ADD new skills as you learn them
+       MOBILE PHOTO SECTION
+       Shown below hero on tablet/mobile (hidden on desktop via CSS)
+       Shares the same uploaded image via JS
+       ⚡ Just upload once on desktop view — it shows here too on mobile
   ============================================================ -->
+  <div class="mobile-photo-section" id="mobilePhotoSection">
+    <!-- Upload prompt (before photo) -->
+    <div class="mobile-upload-zone" id="mobileUploadZone"
+         onclick="document.getElementById('photo-input').click()">
+      <div class="upload-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h3>Tap to add your photo</h3>
+      <p>Shows here on mobile</p>
+    </div>
+    <!-- Photo display (after upload) -->
+    <div class="mobile-photo-inner" id="mobilePhotoInner" style="display:none;">
+      <img id="photoImgMobile" src="" alt="Tejas Tripathi"/>
+      <span class="mobile-retap" onclick="document.getElementById('photo-input').click()">Change</span>
+    </div>
+  </div>
+
+
+  <!-- TICKER -->
   <div class="marquee-wrap">
     <div class="marquee-track">
       <span>Selenium WebDriver</span><span class="dot">✦</span>
@@ -800,7 +917,7 @@
       <span>AI Prompting</span><span class="dot">✦</span>
       <span>REST APIs</span><span class="dot">✦</span>
       <span>STLC</span><span class="dot">✦</span>
-      <!-- Duplicate for seamless loop -->
+      <!-- duplicate for seamless loop -->
       <span>Selenium WebDriver</span><span class="dot">✦</span>
       <span>Java</span><span class="dot">✦</span>
       <span>TestNG</span><span class="dot">✦</span>
@@ -818,39 +935,75 @@
 
 
   <!-- ============================================================
-       ABOUT SECTION
-       ⚡ EDIT the paragraph text below to tell your story
+       ABOUT
   ============================================================ -->
   <section id="about">
     <div class="about-grid">
-
       <div class="about-body fade-in">
         <p class="label">About Me</p>
         <h2 class="section-title">I build, I teach,<br><em>I explore</em></h2>
-        <p>I'm a Computer Application graduate diving deep into QA Automation — learning Selenium with Java to write tests that actually catch bugs. Following a structured 4-month plan: STLC → SQL → AI-assisted testing → API testing with Postman.</p>
+        <p>Computer Application graduate diving deep into QA Automation — learning Selenium with Java to write tests that actually catch bugs. Following a structured 4-month plan: STLC → SQL → AI-assisted testing → API testing with Postman.</p>
         <p>Beyond QA, I work with Python and FastAPI on backend projects. Always reading about tech, products, and business. I enjoy deep conversations about how systems work — whether it's a test framework, a startup, or a motorcycle engine.</p>
         <p>Powered by curiosity and Wi-Fi.</p>
         <!-- ⚡ ADD/REMOVE chips as your stack grows -->
         <div class="tech-chips">
-          <span class="chip">Java</span>
-          <span class="chip">Selenium</span>
-          <span class="chip">Python</span>
-          <span class="chip">FastAPI</span>
-          <span class="chip">TestNG</span>
-          <span class="chip">Maven</span>
-          <span class="chip">SQL</span>
-          <span class="chip">Postman</span>
-          <span class="chip">GitHub Actions</span>
-          <span class="chip">Make</span>
+          <span class="chip">Java</span><span class="chip">Selenium</span>
+          <span class="chip">Python</span><span class="chip">FastAPI</span>
+          <span class="chip">TestNG</span><span class="chip">Maven</span>
+          <span class="chip">SQL</span><span class="chip">Postman</span>
+          <span class="chip">GitHub Actions</span><span class="chip">Make</span>
         </div>
       </div>
-
       <div class="about-cards fade-in">
         <div class="about-card"><div class="card-icon">🎓</div><h4>Education</h4><p>Bachelors in Computer Application</p></div>
         <div class="about-card"><div class="card-icon">🧪</div><h4>Current Focus</h4><p>QA Automation — Selenium &amp; Java</p></div>
         <div class="about-card"><div class="card-icon">⚙️</div><h4>Backend</h4><p>Python, FastAPI, REST APIs, CRUD</p></div>
         <div class="about-card"><div class="card-icon">🤖</div><h4>AI &amp; Tools</h4><p>AI Prompting, Make, automation workflows</p></div>
       </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       EXPERIENCE SECTION
+       Currently shows an "empty state" placeholder.
+
+       ⚡ WHEN YOU GET YOUR FIRST JOB / INTERNSHIP:
+          1. Delete the entire <div class="exp-empty"> block
+          2. Add an <div class="exp-item active"> block like the example below
+          3. For future jobs, add more .exp-item blocks below it (remove "active")
+
+       EXAMPLE BLOCK TO COPY:
+       <div class="exp-item active">
+         <div class="exp-header">
+           <span class="exp-role">QA Automation Engineer</span>
+           <span class="exp-date">Jun 2025 — Present</span>
+         </div>
+         <div class="exp-company">Company Name · Full-time</div>
+         <p class="exp-desc">
+           Brief description of what you do / did. Keep it 1-2 sentences.
+         </p>
+         <div class="exp-tags">
+           <span class="exp-tag">Selenium</span>
+           <span class="exp-tag">Java</span>
+           <span class="exp-tag">TestNG</span>
+         </div>
+       </div>
+  ============================================================ -->
+  <section id="experience">
+    <p class="label fade-in">Work History</p>
+    <h2 class="section-title fade-in">Experience &amp; <em>Journey</em></h2>
+
+    <div class="exp-timeline fade-in">
+
+      <!-- EMPTY STATE — delete this block once you have real experience -->
+      <div class="exp-empty">
+        <div class="empty-icon">🌱</div>
+        <h3>Just getting started</h3>
+        <p>No work experience yet — but actively learning and building.<br>This section will update when I land my first role or internship.</p>
+      </div>
+
+      <!-- ⚡ PASTE YOUR exp-item BLOCKS HERE when you have experience -->
 
     </div>
   </section>
@@ -858,7 +1011,6 @@
 
   <!-- ============================================================
        SKILLS
-       ⚡ CHANGE level labels (learning/inter/basic) as you grow
   ============================================================ -->
   <section id="skills">
     <p class="label fade-in">What I Know</p>
@@ -882,11 +1034,11 @@
       </div>
       <div class="skill-group fade-in">
         <h3>AI &amp; DevOps</h3>
-        <div class="skill-row"><span>AI Prompting</span>   <span class="level inter">Intermediate</span></div>
-        <div class="skill-row"><span>Git / GitHub</span>   <span class="level inter">Intermediate</span></div>
-        <div class="skill-row"><span>GitHub Actions</span> <span class="level basic">Basic</span></div>
+        <div class="skill-row"><span>AI Prompting</span>    <span class="level inter">Intermediate</span></div>
+        <div class="skill-row"><span>Git / GitHub</span>    <span class="level inter">Intermediate</span></div>
+        <div class="skill-row"><span>GitHub Actions</span>  <span class="level basic">Basic</span></div>
         <div class="skill-row"><span>Make (Automation)</span><span class="level basic">Basic</span></div>
-        <div class="skill-row"><span>Docker</span>         <span class="level basic">Basic</span></div>
+        <div class="skill-row"><span>Docker</span>          <span class="level basic">Basic</span></div>
       </div>
     </div>
   </section>
@@ -895,7 +1047,6 @@
   <!-- ============================================================
        PROJECTS
        ⚡ REPLACE # hrefs with real GitHub / live demo links
-       ⚡ REPLACE emoji thumbs with screenshots when ready
   ============================================================ -->
   <section id="projects">
     <p class="label fade-in">Portfolio</p>
@@ -903,12 +1054,11 @@
     <div class="projects-grid">
 
       <div class="project-card fade-in">
-        <div class="project-thumb"><img src="https://tejastripathi.netlify.app/assets/wiz ai project.png" alt="Wiz AI" /></div>
+        <div class="project-thumb"><img src="https://tejastripathi.netlify.app/assets/wiz ai project.png" alt="Wiz AI"/></div>
         <div class="project-body">
           <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">AI</span><span class="project-tag">FastAPI</span></div>
           <h3>Wiz AI</h3>
-          <p>An AI-powered project exploring automation and intelligent workflows using Python and modern APIs.</p>
-          <!-- ⚡ UPDATE: Add real GitHub and live demo links -->
+          <p>AI-powered project exploring automation and intelligent workflows using Python and modern APIs.</p>
           <div class="project-links">
             <a href="#" class="plink dark">GitHub →</a>
             <a href="#" class="plink light">Live Demo</a>
@@ -931,7 +1081,7 @@
         <div class="project-body">
           <div class="project-tags"><span class="project-tag">Selenium</span><span class="project-tag">Java</span><span class="project-tag">TestNG</span></div>
           <h3>QA Automation Suite</h3>
-          <p>Selenium + TestNG test framework being built as part of the 4-month learning plan. Coming soon.</p>
+          <p>Selenium + TestNG test framework being built as part of the 4-month learning plan.</p>
         </div>
       </div>
 
@@ -949,9 +1099,8 @@
 
 
   <!-- ============================================================
-       BLOG — Medium
-       ⚡ REPLACE Medium URL with your real handle once created
-       ⚡ REPLACE placeholder rows with real article titles as you publish
+       BLOG
+       ⚡ REPLACE Medium URL once your account is live
   ============================================================ -->
   <section id="blog">
     <div class="blog-inner">
@@ -959,13 +1108,12 @@
         <p class="label">Writing</p>
         <h2 class="section-title">Thoughts on<br><em>tech &amp; craft</em></h2>
         <p>Building a writing habit on Medium — sharing what I learn about QA automation, AI tools, Python, and the developer journey. First articles coming soon.</p>
-        <!-- ⚡ UPDATE this link once your Medium account is live -->
         <a href="https://medium.com/@tejastripathi26" target="_blank" class="medium-cta">
-          <em class="medium-icon">M</em>
-          Follow on Medium
+          <em class="medium-icon">M</em> Follow on Medium
         </a>
       </div>
       <div class="blog-cards fade-in">
+        <!-- ⚡ REPLACE these with real article titles as you publish -->
         <div class="blog-placeholder"><span class="blog-num">01</span><p>First article coming soon — stay tuned.</p></div>
         <div class="blog-placeholder"><span class="blog-num">02</span><p>Writing about my Selenium + Java learning journey.</p></div>
         <div class="blog-placeholder"><span class="blog-num">03</span><p>How I use AI tools to learn faster as a junior dev.</p></div>
@@ -975,7 +1123,7 @@
 
 
   <!-- ============================================================
-       CONTACT
+       CONTACT — dark section
   ============================================================ -->
   <section id="contact">
     <p class="label">Say Hello</p>
@@ -989,7 +1137,6 @@
     <div class="contact-info">
       <div class="c-item"><label>Email</label><a href="mailto:tejastripathi26@gmail.com">tejastripathi26@gmail.com</a></div>
       <div class="c-item"><label>LinkedIn</label><a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank">tejas-tripathi</a></div>
-      <!-- ⚡ UPDATE with your real Medium handle -->
       <div class="c-item"><label>Medium</label><a href="https://medium.com/@tejastripathi26" target="_blank">@tejastripathi26</a></div>
     </div>
   </section>
@@ -1003,106 +1150,139 @@
 
 
   <!-- ============================================================
-       JAVASCRIPT — 5 features
-       1. Custom >< cursor movement
-       2. Cursor hover expand (on links/buttons)
-       3. Particle animation (only in #particle-zone)
-       4. Hamburger menu toggle
-       5. Typewriter name effect
-       6. Scroll fade-in
-       7. Photo upload
+       JAVASCRIPT
   ============================================================ -->
   <script>
 
     /* ----------------------------------------------------------
-       1 & 2.  CUSTOM CURSOR — follows mouse, expands on hover
+       DETECT TOUCH DEVICE
+       If touch, hide trail and show ripple on taps instead
     ---------------------------------------------------------- */
-    const cursorEl = document.getElementById('cursor');
-    let mouseX = 0, mouseY = 0;
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    if (isTouch) document.body.classList.add('is-touch');
 
-    /* Track real mouse position */
+
+    /* ----------------------------------------------------------
+       1. CURSOR TRAIL (desktop only)
+          Small dot that follows mouse with a smooth lag.
+          Auto-switches to white on dark backgrounds (#contact, footer).
+    ---------------------------------------------------------- */
+    const trail = document.getElementById('cursor-trail');
+
+    /* List of selectors that count as "dark background" zones */
+    const darkZones = ['#contact', 'footer'];
+
+    /* Current mouse position */
+    let mx = 0, my = 0;
+
     document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursorEl.style.transform = `translate(calc(${mouseX}px - 50%), calc(${mouseY}px - 50%))`;
+      mx = e.clientX;
+      my = e.clientY;
+
+      /* Move the trail dot */
+      trail.style.left = mx + 'px';
+      trail.style.top  = my + 'px';
+
+      /* Check if cursor is over a dark section */
+      const el = document.elementFromPoint(mx, my);
+      let isDark = false;
+      if (el) {
+        isDark = darkZones.some(sel => el.closest(sel));
+      }
+      document.body.classList.toggle('cursor-dark', isDark);
     });
 
-    /* Expand brackets when over a clickable element */
+    /* Expand dot on hover over links / buttons */
     document.addEventListener('mouseover', e => {
-      const t = e.target;
-      if (t.closest('a, button, .upload-btn, [onclick]')) {
+      if (e.target.closest('a, button, .upload-btn')) {
         document.body.classList.add('cursor-hover');
       }
     });
     document.addEventListener('mouseout', e => {
-      const t = e.target;
-      if (t.closest('a, button, .upload-btn, [onclick]')) {
+      if (e.target.closest('a, button, .upload-btn')) {
         document.body.classList.remove('cursor-hover');
       }
     });
 
-    /* Hide cursor when leaving window */
-    document.addEventListener('mouseleave', () => { cursorEl.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { cursorEl.style.opacity = '1'; });
+    /* Fade out when leaving the window */
+    document.addEventListener('mouseleave', () => trail.style.opacity = '0');
+    document.addEventListener('mouseenter', () => trail.style.opacity = '');
 
 
     /* ----------------------------------------------------------
-       3.  PARTICLE SYSTEM — only fires inside #particle-zone
-           Uses an HTML5 canvas for performance.
-           Particles are tiny dots that drift away from cursor.
+       2. MOBILE TOUCH RIPPLE
+          On every tap, a ring expands from the touch point and fades.
+          Ring color adapts to dark sections.
+    ---------------------------------------------------------- */
+    if (isTouch) {
+      document.addEventListener('touchstart', e => {
+        const touch = e.touches[0];
+        const x = touch.clientX;
+        const y = touch.clientY;
+
+        /* Check if tap is on a dark zone */
+        const el = document.elementFromPoint(x, y);
+        const onDark = el && darkZones.some(sel => el.closest(sel));
+
+        /* Create a ripple div */
+        const ripple = document.createElement('div');
+        ripple.className = 'touch-ripple' + (onDark ? ' light' : '');
+        ripple.style.left = x + 'px';
+        ripple.style.top  = y + 'px';
+        document.body.appendChild(ripple);
+
+        /* Remove after animation ends */
+        ripple.addEventListener('animationend', () => ripple.remove());
+      }, { passive: true });
+    }
+
+
+    /* ----------------------------------------------------------
+       3. PARTICLE SYSTEM (inside #particle-zone only)
     ---------------------------------------------------------- */
     (function () {
-
       const zone   = document.getElementById('particle-zone');
       const canvas = document.getElementById('particle-canvas');
       const ctx    = canvas.getContext('2d');
-      let   particles = [];
-      let   inZone  = false;          // is the mouse currently inside the zone?
-      let   localX  = 0, localY = 0; // cursor position relative to canvas
+      let   parts  = [];
+      let   lx = 0, ly = 0;
 
-      /* Resize canvas to match its CSS size */
-      function resizeCanvas() {
+      /* Size canvas to match its CSS rendered size */
+      function resize() {
         const r = canvas.getBoundingClientRect();
         canvas.width  = r.width;
         canvas.height = r.height;
       }
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+      resize();
+      window.addEventListener('resize', resize);
 
-      /* Particle constructor */
+      /* Particle object */
       function Particle(x, y) {
-        const angle  = Math.random() * Math.PI * 2;
-        const speed  = 0.4 + Math.random() * 1.2;
-        const size   = 1 + Math.random() * 2.5;
-        const shades = ['#111111', '#555555', '#888888', '#aaaaaa', '#cccccc'];
-
-        this.x    = x + (Math.random() - 0.5) * 12;
-        this.y    = y + (Math.random() - 0.5) * 12;
-        this.vx   = Math.cos(angle) * speed;
-        this.vy   = Math.sin(angle) * speed - 0.3; /* slight upward drift */
-        this.size = size;
-        this.alpha= 0.7 + Math.random() * 0.3;
-        this.fade = 0.012 + Math.random() * 0.015;
-        this.color= shades[Math.floor(Math.random() * shades.length)];
-        /* Some particles are tiny ">" or "<" characters instead of dots */
-        this.isChar = Math.random() < 0.08;
-        this.char   = Math.random() < 0.5 ? '>' : '<';
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.4 + Math.random() * 1.2;
+        const grays = ['#111','#444','#777','#aaa','#ccc'];
+        this.x     = x + (Math.random() - 0.5) * 10;
+        this.y     = y + (Math.random() - 0.5) * 10;
+        this.vx    = Math.cos(angle) * speed;
+        this.vy    = Math.sin(angle) * speed - 0.3;
+        this.size  = 1 + Math.random() * 2.2;
+        this.alpha = 0.65 + Math.random() * 0.35;
+        this.fade  = 0.012 + Math.random() * 0.015;
+        this.color = grays[Math.floor(Math.random() * grays.length)];
+        this.isChar= Math.random() < 0.07;
+        this.char  = Math.random() < 0.5 ? '>' : '<';
       }
-
-      /* Update particle position each frame */
-      Particle.prototype.update = function () {
-        this.x     += this.vx;
-        this.y     += this.vy;
-        this.vy    -= 0.005;          /* gentle acceleration upward */
+      Particle.prototype.update = function() {
+        this.x    += this.vx;
+        this.y    += this.vy;
+        this.vy   -= 0.005;
         this.alpha -= this.fade;
       };
-
-      /* Draw particle */
-      Particle.prototype.draw = function () {
+      Particle.prototype.draw = function() {
         ctx.globalAlpha = Math.max(0, this.alpha);
         ctx.fillStyle   = this.color;
         if (this.isChar) {
-          ctx.font      = `600 ${this.size * 4}px 'Outfit', sans-serif`;
+          ctx.font = `600 ${this.size * 4}px 'Outfit', sans-serif`;
           ctx.fillText(this.char, this.x, this.y);
         } else {
           ctx.beginPath();
@@ -1112,63 +1292,40 @@
         ctx.globalAlpha = 1;
       };
 
-      /* Track when mouse enters / leaves the zone */
-      zone.addEventListener('mouseenter', () => {
-        inZone = true;
-        document.body.classList.add('cursor-particle');
-      });
-      zone.addEventListener('mouseleave', () => {
-        inZone = false;
-        document.body.classList.remove('cursor-particle');
-      });
-
-      /* Track mouse position relative to canvas */
+      /* Track mouse in zone */
+      zone.addEventListener('mouseenter', () => document.body.classList.add('cursor-particle'));
+      zone.addEventListener('mouseleave', () => document.body.classList.remove('cursor-particle'));
       zone.addEventListener('mousemove', e => {
         const r = canvas.getBoundingClientRect();
-        localX = e.clientX - r.left;
-        localY = e.clientY - r.top;
-
-        /* Spawn 3-5 particles per move event while inside zone */
-        const count = 3 + Math.floor(Math.random() * 3);
-        for (let i = 0; i < count; i++) {
-          particles.push(new Particle(localX, localY));
-        }
+        lx = e.clientX - r.left;
+        ly = e.clientY - r.top;
+        for (let i = 0; i < 4; i++) parts.push(new Particle(lx, ly));
       });
-
-      /* Also spawn a burst when user clicks inside the zone */
       zone.addEventListener('click', () => {
-        for (let i = 0; i < 20; i++) {
-          particles.push(new Particle(localX, localY));
-        }
+        for (let i = 0; i < 22; i++) parts.push(new Particle(lx, ly));
       });
 
-      /* Animation loop */
-      function loop() {
-        /* Clear canvas */
+      /* Render loop */
+      (function loop() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        /* Update + draw each particle, remove dead ones */
-        particles = particles.filter(p => p.alpha > 0);
-        particles.forEach(p => { p.update(); p.draw(); });
-
+        parts = parts.filter(p => p.alpha > 0);
+        parts.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(loop);
-      }
-      loop();
-
+      })();
     })();
 
 
     /* ----------------------------------------------------------
-       4.  HAMBURGER MENU
+       4. HAMBURGER MENU
     ---------------------------------------------------------- */
     function toggleMenu() {
-      const menu     = document.getElementById('mobileMenu');
-      const backdrop = document.getElementById('backdrop');
-      const btn      = document.getElementById('hamburger');
-      const isOpen   = menu.classList.toggle('open');
-      backdrop.classList.toggle('open', isOpen);
-      btn.classList.toggle('open', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
+      const m = document.getElementById('mobileMenu');
+      const b = document.getElementById('backdrop');
+      const h = document.getElementById('hamburger');
+      const open = m.classList.toggle('open');
+      b.classList.toggle('open', open);
+      h.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
     }
     function closeMenu() {
       document.getElementById('mobileMenu').classList.remove('open');
@@ -1179,23 +1336,18 @@
 
 
     /* ----------------------------------------------------------
-       5.  TYPEWRITER EFFECT
-           ⚡ Change `name` to update the typed text
+       5. TYPEWRITER
+       ⚡ Change `name` below to update the typed text
     ---------------------------------------------------------- */
     (function () {
-      const name  = 'Tejas Tripathi'; /* ← CHANGE THIS */
-      const el    = document.getElementById('typewriter');
-      let i       = 0;
-      let typing  = true;
-
+      const name = 'Tejas Tripathi'; /* ← CHANGE THIS */
+      const el   = document.getElementById('typewriter');
+      let i = 0, typing = true;
       function tick() {
         if (typing) {
           el.textContent = name.slice(0, i + 1);
           i++;
-          if (i === name.length) {
-            setTimeout(() => { typing = false; tick(); }, 2500);
-            return;
-          }
+          if (i === name.length) { setTimeout(() => { typing = false; tick(); }, 2500); return; }
           setTimeout(tick, 65 + Math.random() * 55);
         } else {
           el.textContent = name.slice(0, i - 1);
@@ -1209,7 +1361,7 @@
 
 
     /* ----------------------------------------------------------
-       6.  SCROLL FADE-IN
+       6. SCROLL FADE-IN
     ---------------------------------------------------------- */
     (function () {
       const obs = new IntersectionObserver(
@@ -1223,44 +1375,44 @@
 
 
     /* ----------------------------------------------------------
-       7.  PHOTO UPLOAD
-           Drag & drop OR click to select an image.
-           Image is stored as object URL and shown in place of the upload zone.
+       7. PHOTO UPLOAD
+          Single file input feeds BOTH the desktop column
+          AND the mobile section at the same time.
     ---------------------------------------------------------- */
-    const photoInput   = document.getElementById('photo-input');
-    const uploadZone   = document.getElementById('uploadZone');
-    const photoDisplay = document.getElementById('photoDisplay');
-    const photoImg     = document.getElementById('photoImg');
+    const photoInput = document.getElementById('photo-input');
 
-    /* Show the image when a file is chosen via file picker */
+    /* File picker selection */
     photoInput.addEventListener('change', e => {
       const file = e.target.files[0];
       if (file) loadPhoto(file);
     });
 
-    /* Load and display a File object */
+    /* Load photo into both views */
     function loadPhoto(file) {
-      const url   = URL.createObjectURL(file);
-      photoImg.src = url;
-      uploadZone.style.display   = 'none';
-      photoDisplay.style.display = 'block';
+      const url = URL.createObjectURL(file);
+
+      /* Desktop column */
+      document.getElementById('photoImgDesktop').src = url;
+      document.getElementById('uploadZoneDesktop').style.display  = 'none';
+      document.getElementById('photoDisplayDesktop').style.display = 'block';
+
+      /* Mobile section */
+      document.getElementById('photoImgMobile').src = url;
+      document.getElementById('mobileUploadZone').style.display  = 'none';
+      document.getElementById('mobilePhotoInner').style.display  = 'block';
     }
 
-    /* Drag over — highlight zone */
-    function handleDragOver(e) {
+    /* Drag & drop handlers for desktop zone */
+    function handleDragOver(e, zone) {
       e.preventDefault();
-      uploadZone.classList.add('drag-over');
+      document.getElementById('uploadZone' + (zone === 'desktop' ? 'Desktop' : '')).classList.add('drag-over');
     }
-
-    /* Drag leave — remove highlight */
-    function handleDragLeave(e) {
-      uploadZone.classList.remove('drag-over');
+    function handleDragLeave(e, zone) {
+      document.getElementById('uploadZone' + (zone === 'desktop' ? 'Desktop' : '')).classList.remove('drag-over');
     }
-
-    /* Drop — load the dropped file */
-    function handleDrop(e) {
+    function handleDrop(e, zone) {
       e.preventDefault();
-      uploadZone.classList.remove('drag-over');
+      document.getElementById('uploadZone' + (zone === 'desktop' ? 'Desktop' : '')).classList.remove('drag-over');
       const file = e.dataTransfer.files[0];
       if (file && file.type.startsWith('image/')) loadPhoto(file);
     }
