@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tejas Tripathi — Associate QA Engineer</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <div id="cursor-trail"></div>
+  <div class="menu-backdrop" id="backdrop" onclick="closeMenu()"></div>
+
+  <!-- SLIDE-IN MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="menu-links">
+      <li><a href="#about"      onclick="closeMenu()">About</a></li>
+      <li><a href="#experience" onclick="closeMenu()">Experience</a></li>
+      <li><a href="#skills"     onclick="closeMenu()">Skills</a></li>
+      <li><a href="#projects"   onclick="closeMenu()">Projects</a></li>
+      <li><a href="#blog"       onclick="closeMenu()">Blog</a></li>
+      <li><a href="#contact"    onclick="closeMenu()">Contact</a></li>
+    </ul>
+    <div class="menu-socials">
+      <a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank" title="LinkedIn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+      <a href="https://github.com/TxTMaverick" target="_blank" title="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
+      <a href="https://x.com" target="_blank" title="X">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="https://youtube.com" target="_blank" title="YouTube">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a>
+      <a href="https://medium.com/@tejastripathi26" target="_blank" title="Medium">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+      </a>
+      <a href="https://lapoojhanna.substack.com" target="_blank" title="Substack">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+      </a>
+      <a href="mailto:tejastripathi26@gmail.com" title="Email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#hero" class="nav-logo">Tejas Tripathi</a>
+    <a href="#contact" class="nav-cta">Contact</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-sidebar">
+      <span class="hero-sidebar-text">Associate QA Engineer</span>
+    </div>
+
+    <div class="hero-main">
+      <div class="status-badge anim d1">
+        <span class="status-dot"></span>
+        Available for work
+      </div>
+
+      <div id="particle-zone" class="anim d2">
+        <canvas id="particle-canvas"></canvas>
+        <div class="zone-content">
+          <h1 class="hero-heading">
+            Namaste, I'm<br>
+            <span class="typewriter-wrap">
+              <span id="typewriter"></span><span class="tw-cursor"></span>
+            </span>
+          </h1>
+          <p class="hero-sub">
+            Associate QA Engineer
+            I test systems, and write on tech, geopolitics, and defense.
+            Let’s talk anything from tea to technology.
+          </p>
+        </div>
+      </div>
+
+      <div class="hero-actions anim d3">
+        <a href="#projects" class="btn-dark">View Projects</a>
+        <a href="#" target="_blank" class="btn-outline">View CV ↗</a>
+      </div>
+
+      <div class="hero-socials anim d4">
+        <a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank" class="social-icon" title="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        </a>
+        <a href="https://github.com/TxTMaverick" target="_blank" class="social-icon" title="GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        </a>
+        <a href="https://x.com" target="_blank" class="social-icon" title="X">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://youtube.com" target="_blank" class="social-icon" title="YouTube">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+        <a href="https://medium.com/@tejastripathi26" target="_blank" class="social-icon" title="Medium">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+        </a>
+        <a href="https://lapoojhanna.substack.com" target="_blank" class="social-icon" title="Lapoojhanna on Substack">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+        </a>
+        <a href="mailto:tejastripathi26@gmail.com" class="social-icon" title="Email">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+      </div>
+    </div><!-- /hero-main -->
+
+    <!-- DESKTOP PHOTO COLUMN -->
+    <div class="hero-photo" id="heroPhotoDesktop">
+      <input type="file" id="photo-input" accept="image/*" style="display:none;"/>
+      <div class="photo-display" id="photoDisplayDesktop" style="display:block; height:100%;">
+        <img id="photoImgDesktop" src="assets/tejaspf.png" alt="Tejas Tripathi"/>
+        <div class="photo-reupload" onclick="document.getElementById('photo-input').click()"></div>
+      </div>
+      
+    </div>
+
+  </section><!-- /hero -->
+
+
+  <!-- ============================================================
+       MOBILE PHOTO SECTION
+       FIX: closing </div> was missing — this was the root cause
+       of the entire page being hidden on desktop
+  ============================================================ -->
+  <div class="mobile-photo-section" id="mobilePhotoSection">
+    <div class="mobile-photo-inner" id="mobilePhotoInner" style="display:block;">
+      <img id="photoImgMobile" src="assets/tejaspf.png" alt="Tejas Tripathi"/>
+    </div>
+  </div><!-- /mobile-photo-section ← THIS WAS THE MISSING TAG -->
+
+
+  <!-- TICKER -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>Playwright</span><span class="dot">✦</span>
+      <span>TypeScript</span><span class="dot">✦</span>
+      <span>Python</span><span class="dot">✦</span>
+      <span>Postman</span><span class="dot">✦</span>
+      <span>SQL</span><span class="dot">✦</span>
+      <span>GitHub Actions</span><span class="dot">✦</span>
+      <span>AI Prompting</span><span class="dot">✦</span>
+      <span>REST APIs</span><span class="dot">✦</span>
+      <span>STLC</span><span class="dot">✦</span>
+      <span>Claude</span><span class="dot">✦</span>
+      <span>Context Engineering</span><span class="dot">✦</span>
+      <span>AI Agents</span><span class="dot">✦</span>
+      <span>Playwright</span><span class="dot">✦</span>
+      <span>TypeScript</span><span class="dot">✦</span>
+      <span>Python</span><span class="dot">✦</span>
+      <span>Postman</span><span class="dot">✦</span>
+      <span>SQL</span><span class="dot">✦</span>
+      <span>GitHub Actions</span><span class="dot">✦</span>
+      <span>AI Prompting</span><span class="dot">✦</span>
+      <span>REST APIs</span><span class="dot">✦</span>
+      <span>STLC</span><span class="dot">✦</span>
+      <span>Claude</span><span class="dot">✦</span>
+      <span>Context Engineering</span><span class="dot">✦</span>
+      <span>AI Agents</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-body fade-in">
+        <p class="label">About Me</p>
+        <h2 class="section-title">I build, I test,<br><em>I explore</em></h2>
+        <p>Computer Application graduate, currently working as an Associate QA Engineer — learning AI automation, GenAI QA engineering, and automation tools to make execution faster and more stable, reduce flakiness, and improve release quality.</p>
+        <p>I read about tech, products. I enjoy deep conversations about how systems work whether it’s a test framework, a policy, or a government.</p>
+        <p>I do anchoring, play cricket and basketball, run marathons, dance and I’m relentlessly curious.</p>
+        <div class="tech-chips">
+          <span class="chip">Playwright</span><span class="chip">TypeScript</span>
+          <span class="chip">Python</span><span class="chip">REST APIs</span>
+          <span class="chip">SQL</span><span class="chip">Postman</span>
+          <span class="chip">GitHub Actions</span><span class="chip">Claude</span>
+          <span class="chip">Context Engineering</span><span class="chip">AI Agents</span>
+        </div>
+      </div>
+      <div class="about-cards fade-in">
+        <div class="about-card"><div class="card-icon">🎓</div><h4>Education</h4><p>Bachelors in Computer Application</p></div>
+        <div class="about-card"><div class="card-icon">🧪</div><h4>Current Focus</h4><p>QA Automation &bull; GenAI QA &bull; Playwright &bull; AI Agents</p></div>
+        <div class="about-card"><div class="card-icon">⚙️</div><h4>Backend</h4><p>Python, REST APIs, CRUD</p></div>
+        <div class="about-card"><div class="card-icon">🤖</div><h4>AI &amp; Tools</h4><p>AI Prompting, Claude, Context Engineering, AI Agents, Automation Workflows</p></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <p class="label fade-in">Work History</p>
+    <h2 class="section-title fade-in">Experience &amp; <em>Journey</em></h2>
+    <div class="exp-timeline fade-in">
+
+      <div class="exp-item active">
+        <div class="exp-header">
+          <span class="exp-role">Associate QA Engineer</span>
+          <span class="exp-date">Apr 2026 &mdash; Present</span>
+        </div>
+        <p class="exp-company">Gatesix Technologies India Pvt. Ltd. &middot; Indore</p>
+        <p class="exp-desc">Working on manual and automated testing for client-facing products. Learning and applying Playwright, and API testing in a live project environment. Collaborating with developers and team lead to ensure quality during sprint cycles.</p>
+        <div class="exp-tags">
+          <span class="exp-tag">QA Automation</span>
+          <span class="exp-tag">Playwright</span>
+          <span class="exp-tag">Postman</span>
+          <span class="exp-tag">Jira</span>
+          <span class="exp-tag">STLC</span>
+        </div>
+      </div>
+
+      
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <p class="label fade-in">What I Know</p>
+    <h2 class="section-title fade-in">Skills</h2>
+    <div class="skills-grid">
+      <div class="skill-group fade-in">
+        <h3>QA Automation</h3>
+        <div class="skill-row"><span>Playwright</span></div>
+        <div class="skill-row"><span>TypeScript</span></div>
+        <div class="skill-row"><span>API Automation Framework</span></div>
+        <div class="skill-row"><span>STLC / Manual QA</span></div>
+        <div class="skill-row"><span>Postman</span></div>
+      </div>
+      <div class="skill-group fade-in">
+        <h3>Backend &amp; APIs</h3>
+        <div class="skill-row"><span>Python</span></div>
+        <div class="skill-row"><span>REST APIs / CRUD</span></div>
+        <div class="skill-row"><span>SQL</span></div>
+        <div class="skill-row"><span>Postman</span></div>
+      </div>
+      <div class="skill-group fade-in">
+        <h3>AI &amp; DevOps</h3>
+        <div class="skill-row"><span>Claude</span></div>
+        <div class="skill-row"><span>Context Engineering</span></div>
+        <div class="skill-row"><span>AI Agents</span></div>
+        <div class="skill-row"><span>AI Prompting</span></div>
+        <div class="skill-row"><span>Git / GitHub</span></div>
+        <div class="skill-row"><span>GitHub Actions</span></div>
+        <div class="skill-row"><span>Docker</span></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <p class="label fade-in">Portfolio</p>
+    <h2 class="section-title fade-in">Recent <em>Projects</em></h2>
+    <div class="projects-grid">
+
+      <div class="project-card fade-in">
+        <div class="project-thumb"><img src="https://tejastripathi.netlify.app/assets/wiz ai project.png" alt="Wiz AI"/></div>
+        <div class="project-body">
+          <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">AI</span></div>
+          <h3>Wiz AI</h3>
+          <p>AI-powered project exploring automation and intelligent workflows using Python and modern APIs.</p>
+          <div class="project-links">
+            <a href="#" class="plink dark">GitHub →</a>
+            <a href="#" class="plink light">Live Demo</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- UPDATED: TxT Insights Blog → Lapoojhanna on Substack -->
+      <div class="project-card fade-in">
+        <div class="project-thumb" style="font-size:3rem; background: #fff3ed;">✍️</div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">Substack</span>
+            <span class="project-tag">Writing</span>
+            <span class="project-tag">Satire</span>
+          </div>
+          <h3>Lapoojhanna</h3>
+          <p>Personal blog on satire, society, observations & life — written in my own unfiltered voice.</p>
+          <div class="project-links">
+            <a href="https://lapoojhanna.substack.com" target="_blank" class="plink dark">Read on Substack →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card fade-in">
+        <div class="project-thumb" style="font-size:3rem;">🤖</div>
+        <div class="project-body">
+          <div class="project-tags">
+            <span class="project-tag">AI Agents</span>
+            <span class="project-tag">Playwright</span>
+            <span class="project-tag">GenAI</span>
+          </div>
+          <h3>AI Agent for Testing Websites</h3>
+          <p>An intelligent agent that autonomously navigates and tests web applications — combining Playwright automation with AI-driven decision-making for smarter, adaptive test execution.</p>
+          <div class="project-links">
+            <a href="#" class="plink dark">GitHub →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- BLOG — updated with Medium + Lapoojhanna (Substack) -->
+  <section id="blog">
+    <div class="blog-inner">
+      <div class="blog-left fade-in">
+        <p class="label">Writing</p>
+        <h2 class="section-title">Thoughts on<br><em>tech &amp; life</em></h2>
+        <div class="blog-cta-row">
+          <a href="https://medium.com/@tejastripathi26" target="_blank" class="medium-cta">
+            <em class="medium-icon">M</em> Medium
+          </a>
+          <a href="https://lapoojhanna.substack.com" target="_blank" class="substack-cta">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+            Lapoojhanna
+          </a>
+        </div>
+      </div>
+      <div class="blog-cards fade-in">
+        <div class="blog-placeholder">
+          <span class="blog-num">01</span>
+          <p>First article coming soon — stay tuned.</p>
+          <span class="blog-platform-tag medium">Medium</span>
+        </div>
+        <div class="blog-placeholder">
+          <span class="blog-num">02</span>
+          <p>Writing about my learning journey.</p>
+          <span class="blog-platform-tag medium">Medium</span>
+        </div>
+        <div class="blog-placeholder">
+          <span class="blog-num">03</span>
+          <p>First post on Lapoojhanna — something real, something raw.</p>
+          <span class="blog-platform-tag substack">Substack</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <p class="label">Say Hello</p>
+    <h2 class="section-title">Let's <em>work</em><br>together</h2>
+    <p class="contact-sub">Open to GenAI QA roles, and interesting collabs. I reply fast.</p>
+    <div class="contact-actions">
+      <a href="mailto:tejastripathi26@gmail.com" class="btn-cw">Send an Email</a>
+      <a href="https://www.linkedin.com/in/tejas-tripathi-772844233/" target="_blank" class="btn-co">LinkedIn</a>
+    </div>
+    <div class="contact-divider"></div>
+    
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Tejas Tripathi. All rights reserved.</p>
+    <a href="#hero">Back to top ↑</a>
+  </footer>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
